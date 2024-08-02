@@ -43,3 +43,24 @@ type CreateUserServiceOutput struct {
 type UserService interface {
 	CreateUser(ctx context.Context, input CreateUserServiceInput) (*CreateUserServiceOutput, error)
 }
+
+// User / Presenter
+
+type UserPresenter struct {
+	ID        string `json:"id"`
+	Document  string `json:"document"`
+	Name      string `json:"name"`
+	Email     string `json:"email"`
+	Enabled   bool   `json:"enabled"`
+	CreatedAt string `json:"created_at"`
+	UpdatedAt string `json:"updated_at"`
+}
+
+// User / Request Validate
+
+type CreateUserRequest struct {
+	Name     string `json:"name" validate:"required,min=3,max=255"`
+	Email    string `json:"email" validate:"required,email"`
+	Password string `json:"password" validate:"required,min=8,max=255"`
+	Document string `json:"document" validate:"required,min=11,max=14"`
+}
