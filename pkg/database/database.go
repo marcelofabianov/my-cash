@@ -6,6 +6,8 @@ import (
 	"fmt"
 	"time"
 
+	_ "github.com/lib/pq"
+
 	"github.com/marcelofabianov/my-cash/config"
 )
 
