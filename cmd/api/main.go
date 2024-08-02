@@ -2,9 +2,15 @@ package main
 
 import (
 	"context"
+	"fmt"
 	"log"
 
+	"github.com/gofiber/fiber/v2"
+
 	"github.com/marcelofabianov/my-cash/config"
+	"github.com/marcelofabianov/my-cash/internal/adapter/http"
+	"github.com/marcelofabianov/my-cash/internal/adapter/http/middleware"
+	"github.com/marcelofabianov/my-cash/internal/adapter/http/provider"
 	"github.com/marcelofabianov/my-cash/pkg/database"
 	"github.com/marcelofabianov/my-cash/pkg/logger"
 )
@@ -36,5 +42,17 @@ func main() {
 		}
 	}()
 
-	logger.Info("starting application")
+	// API Server
+	app := fiber.New()
+	app = middleware.Load(app, logger, &cfg.Api)
+	app = provider.Load(app, db.Conn(), logger)
+	app = http.Route(app)
+
+	addr := fmt.Sprintf("%s:%s", cfg.Api.Host, cfg.Api.Port)
+
+	if err := app.Listen(addr); err != nil {
+		logger.Fatal("error starting API server", logger.FieldError(err))
+	}
+
+	logger.Info("API server started", logger.Field("address", addr))
 }
