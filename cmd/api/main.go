@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"fmt"
 	"log"
 
@@ -9,6 +10,7 @@ import (
 	"github.com/marcelofabianov/my-cash/config"
 	"github.com/marcelofabianov/my-cash/internal/adapter/http"
 	"github.com/marcelofabianov/my-cash/internal/adapter/http/middleware"
+	"github.com/marcelofabianov/my-cash/pkg/database"
 	"github.com/marcelofabianov/my-cash/pkg/logger"
 )
 
@@ -25,6 +27,19 @@ func main() {
 		log.Fatalf("error creating logger: %v", err)
 	}
 	defer logger.Close()
+
+	ctx := context.Background()
+
+	// Database
+	db, err := database.Connect(ctx, cfg.Db)
+	if err != nil {
+		logger.Fatal("error connecting to database", logger.FieldError(err))
+	}
+	defer func() {
+		if err := db.Close(); err != nil {
+			log.Fatal("error closing database connection")
+		}
+	}()
 
 	// API Server
 	app := fiber.New()
