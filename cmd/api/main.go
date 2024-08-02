@@ -8,6 +8,7 @@ import (
 
 	"github.com/marcelofabianov/my-cash/config"
 	"github.com/marcelofabianov/my-cash/internal/adapter/http"
+	"github.com/marcelofabianov/my-cash/internal/adapter/http/middleware"
 	"github.com/marcelofabianov/my-cash/pkg/logger"
 )
 
@@ -27,7 +28,7 @@ func main() {
 
 	// API Server
 	app := fiber.New()
-
+	app = middleware.Load(app, logger, &cfg.Api)
 	app = http.Route(app)
 
 	addr := fmt.Sprintf("%s:%s", cfg.Api.Host, cfg.Api.Port)
