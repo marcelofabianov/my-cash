@@ -29,3 +29,17 @@ type CreateUserUseCaseOutput struct {
 type CreateUserUseCase interface {
 	Execute(ctx context.Context, input CreateUserUseCaseInput) (*CreateUserUseCaseOutput, error)
 }
+
+// User / Service Layer
+
+type CreateUserServiceInput struct {
+	CreateUserUseCaseInput
+}
+
+type CreateUserServiceOutput struct {
+	CreateUserUseCaseOutput
+}
+
+type UserService interface {
+	CreateUser(ctx context.Context, input CreateUserServiceInput) (*CreateUserServiceOutput, error)
+}
