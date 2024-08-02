@@ -25,6 +25,7 @@ type ApiConfig struct {
 }
 
 type DatabaseConfig struct {
+	Driver   string
 	Host     string
 	Port     string
 	User     string
@@ -59,6 +60,7 @@ func NewConfig() (*Config, error) {
 			LogRequests: os.Getenv("API_LOG_REQUESTS") == "true",
 		},
 		Db: DatabaseConfig{
+			Driver:   os.Getenv("DB_DRIVER"),
 			Host:     os.Getenv("DB_HOST"),
 			Port:     os.Getenv("DB_PORT"),
 			User:     os.Getenv("DB_USER"),
