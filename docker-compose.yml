@@ -1,0 +1,51 @@
+name: "my-cash"
+
+services:
+  my-cash-app:
+    container_name: my-cash-app
+    restart: always
+    image: marcelofabianov/my-cash:latest
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - '${API_PORT:-8081}:8081'
+    depends_on:
+      - my-cash-db
+    networks:
+      - my-cash-network
+    working_dir: /app
+    volumes:
+      - .:/app
+
+  my-cash-db:
+    container_name: my-cash-db
+    restart: always
+    image: 'postgres:16.2'
+    ports:
+      - '${DB_PORT:-5432}:5432'
+    environment:
+      POSTGRES_USER: ${DB_USER:-username}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-password}
+      POSTGRES_DB: ${DB_DATABASE:-my-cash-db}
+    volumes:
+      - my-cash-data:/var/lib/postgresql/data:rw
+    networks:
+      - my-cash-network
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "sh -c 'pg_isready -U ${DB_USER:-username} -d ${DB_DATABASE:-my-cash-db}'"
+        ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  my-cash-data:
+    driver: local
+
+networks:
+  my-cash-network:
+    driver: bridge
