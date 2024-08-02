@@ -1,10 +1,10 @@
 package main
 
 import (
-	"fmt"
 	"log"
 
 	"github.com/marcelofabianov/my-cash/config"
+	"github.com/marcelofabianov/my-cash/pkg/logger"
 )
 
 func main() {
@@ -14,5 +14,12 @@ func main() {
 		log.Fatalf("error loading config: %v", err)
 	}
 
-	fmt.Println(cfg.Env)
+	// Logger
+	logger, err := logger.NewLogger(cfg.Log)
+	if err != nil {
+		log.Fatalf("error creating logger: %v", err)
+	}
+	defer logger.Close()
+
+	logger.Info("starting application")
 }
