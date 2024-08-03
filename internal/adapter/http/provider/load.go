@@ -9,7 +9,7 @@ import (
 )
 
 func Load(app *fiber.App, db *sql.DB, logger *logger.Logger) *fiber.App {
-	//app.Use(ServiceProvider(db, *logger))
+	app.Use(ServiceProvider(db, *logger))
 
 	return app
 }
