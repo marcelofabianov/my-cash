@@ -50,3 +50,17 @@ func (r *UserRepository) Create(ctx context.Context, input outbound.CreateUserRe
 
 	return nil
 }
+
+func (r *UserRepository) UserExists(ctx context.Context, input outbound.UserExistsRepositoryInput) (bool, error) {
+	query := `
+		SELECT EXISTS(SELECT 1 FROM users WHERE email = $1 OR document = $2)
+	`
+
+	var exists bool
+	err := r.db.QueryRowContext(ctx, query, input.Email, input.Document).Scan(&exists)
+	if err != nil {
+		return false, err
+	}
+
+	return exists, nil
+}

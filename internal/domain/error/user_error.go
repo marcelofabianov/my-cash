@@ -5,11 +5,10 @@ import (
 )
 
 var (
-	ErrUserNotCreated            = errors.New("error_user_not_created")
-	ErrUserPasswordHashFailed    = errors.New("error_user_password_hash_failed")
-	ErrUserEmailAlreadyExists    = errors.New("error_user_email_already_exists")
-	ErrUserDocumentAlreadyExists = errors.New("error_user_document_already_exists")
-	ErrUserInvalidEntityData     = errors.New("error_user_invalid_entity_data")
+	ErrUserNotCreated         = errors.New("error_user_not_created")
+	ErrUserPasswordHashFailed = errors.New("error_user_password_hash_failed")
+	ErrUserExists             = errors.New("error_user_exists")
+	ErrUserInvalidEntityData  = errors.New("error_user_invalid_entity_data")
 )
 
 func NewUserNotCreatedError(err error) error {
@@ -26,18 +25,11 @@ func NewUserPasswordHashFailedError(err error) error {
 	return ErrUserPasswordHashFailed
 }
 
-func NewUserEmailAlreadyExistsError() error {
+func NewUserExistsError(err error) error {
 	l := InitLogger()
-	l.Error("UserError: Email already exists")
+	l.Error("UserError: User already exists", l.FieldError(err))
 
-	return ErrUserEmailAlreadyExists
-}
-
-func NewUserDocumentAlreadyExistsError() error {
-	l := InitLogger()
-	l.Error("UserError: Document already exists")
-
-	return ErrUserDocumentAlreadyExists
+	return ErrUserExists
 }
 
 func NewUserInvalidEntityDataError(err error) error {
@@ -45,4 +37,20 @@ func NewUserInvalidEntityDataError(err error) error {
 	l.Error("UserError: Invalid entity data", l.FieldError(err))
 
 	return ErrUserInvalidEntityData
+}
+
+func IsUserNotCreatedError(err error) bool {
+	return errors.Is(err, ErrUserNotCreated)
+}
+
+func IsUserPasswordHashFailedError(err error) bool {
+	return errors.Is(err, ErrUserPasswordHashFailed)
+}
+
+func IsUserExistsError(err error) bool {
+	return errors.Is(err, ErrUserExists)
+}
+
+func IsUserInvalidEntityDataError(err error) bool {
+	return errors.Is(err, ErrUserInvalidEntityData)
 }

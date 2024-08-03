@@ -19,6 +19,17 @@ func NewCreateUserUseCase(repository outbound.CreateUserRepository, hasher inbou
 }
 
 func (u *CreateUserUseCase) Execute(ctx context.Context, input inbound.CreateUserUseCaseInput) (*inbound.CreateUserUseCaseOutput, error) {
+	exists, err := u.repository.UserExists(ctx, outbound.UserExistsRepositoryInput{
+		Email:    input.Email,
+		Document: input.Document,
+	})
+	if err != nil {
+		return nil, dError.NewUserExistsError(err)
+	}
+	if exists {
+		return nil, dError.NewUserExistsError(nil)
+	}
+
 	hashedPassword, err := u.hasher.Hash(input.Password)
 	if err != nil {
 		return nil, dError.NewUserPasswordHashFailedError(err)

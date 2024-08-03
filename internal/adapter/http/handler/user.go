@@ -5,6 +5,7 @@ import (
 
 	"github.com/marcelofabianov/my-cash/internal/adapter/http/request"
 	"github.com/marcelofabianov/my-cash/internal/adapter/http/response"
+	dError "github.com/marcelofabianov/my-cash/internal/domain/error"
 	"github.com/marcelofabianov/my-cash/internal/port/inbound"
 )
 
@@ -32,6 +33,11 @@ func CreateUserHandler(c *fiber.Ctx) error {
 
 		outputS, err := service.CreateUser(c.Context(), inputS)
 		if err != nil {
+			if dError.IsUserExistsError(err) {
+				response.BadRequest(c, err)
+				return nil
+			}
+
 			response.InternalServerError(c, err)
 			return nil
 		}

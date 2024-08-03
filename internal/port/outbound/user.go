@@ -12,7 +12,13 @@ type CreateUserRepositoryInput struct {
 	User *domain.User
 }
 
+type UserExistsRepositoryInput struct {
+	Email    string
+	Document string
+}
+
 type CreateUserRepository interface {
+	UserExists(ctx context.Context, input UserExistsRepositoryInput) (bool, error)
 	Create(ctx context.Context, input CreateUserRepositoryInput) error
 }
 
