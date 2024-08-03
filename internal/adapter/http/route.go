@@ -12,5 +12,8 @@ func Route(app *fiber.App) *fiber.App {
 	// Health
 	api.Get("/health", handler.HealthCheckHandler)
 
+	// Users
+	api.Post("/users", handler.CreateUserHandler)
+
 	return app
 }
